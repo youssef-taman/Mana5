@@ -5,6 +5,8 @@ import com.diProject.broker.generated.WeatherStatus;
 import com.example.demo.Utilities.Utils;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
+
 @Service
 public class StationMessageService {
 
@@ -21,7 +23,7 @@ public class StationMessageService {
 
     public  StationMessage generateStationMessage(long stationId, long sNo) {
         String batteryStatus = generateBatteryStatus();
-        long timestamp = System.currentTimeMillis();
+        long timestamp = Instant.now().getEpochSecond();
         WeatherStatus weatherStatus = generateWeatherStatus();
         return StationMessage.newBuilder()
                 .setStationId(stationId)
