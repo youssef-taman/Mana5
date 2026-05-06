@@ -1,4 +1,4 @@
-# WeatherHub
+# Mana5
 
 ## Description
 
@@ -19,7 +19,3 @@ data and archives all data in the form of Parquet files.
   * ElasticSearch / Kibana that are running over the Parquet files
 
 ![image](https://github.com/user-attachments/assets/7d27490e-03b9-4349-96f7-e2338ae54285)
-
-### Channels:
-* Adapter Channel: Transforming the format of the Open-Meteo api response to that of a weather message to be pushed to the Weather-Metrics topic.
-* Dead Letter Channel: Expired messages or messages causing application-level errors end up here.
