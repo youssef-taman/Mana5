@@ -36,32 +36,41 @@ services:
       SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: 'kafka:9092'
       SCHEMA_REGISTRY_LISTENERS: http://0.0.0.0:8081
 
-  # kafka-connect:
-  #   image: confluentinc/cp-kafka-connect:7.6.0
-  #   depends_on: [ kafka ]
-  #   ports:
-  #     - "8083:8083"
-  #   environment:
-  #     CONNECT_BOOTSTRAP_SERVERS: "kafka:9092"
-  #     CONNECT_REST_PORT: "8083"
-  #     CONNECT_GROUP_ID: "parquet-connect-group"
 
-  #     CONNECT_CONFIG_STORAGE_TOPIC: "_connect-configs"
-  #     CONNECT_OFFSET_STORAGE_TOPIC: "_connect-offsets"
-  #     CONNECT_STATUS_STORAGE_TOPIC: "_connect-status"
-  #     CONNECT_CONFIG_STORAGE_REPLICATION_FACTOR: "1"
-  #     CONNECT_OFFSET_STORAGE_REPLICATION_FACTOR: "1"
-  #     CONNECT_STATUS_STORAGE_REPLICATION_FACTOR: "1"
 
-  #     CONNECT_KEY_CONVERTER: "org.apache.kafka.connect.storage.StringConverter"
-  #     CONNECT_VALUE_CONVERTER: "io.confluent.connect.protobuf.ProtobufConverter"
-  #     CONNECT_VALUE_CONVERTER_SCHEMA_REGISTRY_URL: "http://schema-registry:8081"
+  kafka-connect:
+      image: confluentinc/cp-kafka-connect:7.5.0  
+      depends_on: [ kafka ]
+      ports:
+       - "8083:8083"
+      environment:
+       CONNECT_BOOTSTRAP_SERVERS: "kafka:9092"
+       CONNECT_REST_ADVERTISED_HOST_NAME: "kafka-connect"
+       CONNECT_REST_PORT: "8083"
+       CONNECT_GROUP_ID: "parquet-connect-group"
 
-  #     CONNECT_PLUGIN_PATH: "/usr/share/java,/etc/kafka-connect/plugins"
+       CONNECT_CONFIG_STORAGE_TOPIC: "_connect-configs"
+       CONNECT_OFFSET_STORAGE_TOPIC: "_connect-offsets"
+       CONNECT_STATUS_STORAGE_TOPIC: "_connect-status"
+       CONNECT_CONFIG_STORAGE_REPLICATION_FACTOR: "1"
+       CONNECT_OFFSET_STORAGE_REPLICATION_FACTOR: "1"
+       CONNECT_STATUS_STORAGE_REPLICATION_FACTOR: "1"
 
-  #   volumes:
-  #     - ./connect-plugins:/etc/kafka-connect/plugins
-  #     - parquet-data:/data/parquet
+       CONNECT_KEY_CONVERTER: "org.apache.kafka.connect.storage.StringConverter"
+       CONNECT_VALUE_CONVERTER: "io.confluent.connect.protobuf.ProtobufConverter"
+       CONNECT_VALUE_CONVERTER_SCHEMA_REGISTRY_URL: "http://schema-registry:8081"
+       CONNECT_PLUGIN_PATH: "/usr/share/java,/usr/share/confluent-hub-components,/etc/kafka-connect/plugins"
+
+      command:
+        - bash
+        - -c
+        - |
+          confluent-hub install --no-prompt confluentinc/kafka-connect-s3:10.5.7
+          /etc/confluent/docker/run
+
+
+      volumes:
+       - parquet-data:/data/parquet
 
 
   nifi:
@@ -107,6 +116,17 @@ services:
     ports:
       - "5601:5601"
 
+  localstack:
+    image: localstack/localstack:latest
+    environment:
+      - SERVICES=s3,iam 
+      - DEBUG=1   
+      - LOCALSTACK_AUTH_TOKEN=${LOCALSTACK_AUTH_TOKEN}    
+    ports:
+      - "4566:4566"
+    volumes:
+      - localstack:/var/lib/localstack
+
     
 
     
@@ -114,3 +134,4 @@ services:
 volumes:
   parquet-data:
   elasticsearch-data:
+  localstack:
