@@ -1,0 +1,6 @@
+chmod +x ./bitcask_client.sh
+
+
+./bitcask_client.sh --view-all
+./bitcask_client.sh --view --key=SOME_KEY
+./bitcask_client.sh --perf --clients=100
