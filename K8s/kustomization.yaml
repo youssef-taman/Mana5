@@ -1,0 +1,30 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - base/Configuration/kafka-connect-env.yaml
+  - base/Configuration/kafka-config.yaml
+  - base/kafka.yaml
+  - base/schema-registry.yaml
+  - base/kafka-connect.yaml
+  - base/elastic-search.yaml
+  - base/kibana.yaml
+  - base/Configuration/metricbeat-kafka.yaml
+  - base/nifi.yaml
+  - base/local-stack-s3.yaml
+  - base/kafka-connector-setup.yaml
+  - base/ingress.yaml
+  - base/Configuration/station-config.yaml
+  - base/Configuration/station-stream-config.yaml
+  - base/Configuration/central-station-config.yaml
+  - base/station.yaml
+  - base/station-stream.yaml
+  - base/central-station.yaml
+  
+
+
+secretGenerator:
+- name: localstack-secrets
+  env: base/secrets/localstack.env
+- name: s3-credentials
+  env: base/secrets/s3-credentials.env
