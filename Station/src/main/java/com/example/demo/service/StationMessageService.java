@@ -21,7 +21,7 @@ public class StationMessageService {
 
 
 
-    public  StationMessage generateStationMessage(long stationId, long sNo) {
+    public StationMessage generateStationMessage(String stationId, long sNo) {
         String batteryStatus = generateBatteryStatus();
         long timestamp = Instant.now().getEpochSecond();
         WeatherStatus weatherStatus = generateWeatherStatus();

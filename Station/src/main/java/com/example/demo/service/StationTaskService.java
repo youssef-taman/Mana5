@@ -2,7 +2,6 @@ package com.example.demo.service;
 
 import com.diProject.broker.generated.StationMessage;
 import com.example.demo.Utilities.Utils;
-import com.google.protobuf.Message;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -25,8 +24,8 @@ public class StationTaskService {
 
     private final AtomicLong messageNumber = new AtomicLong(0);
 
-    @Value("${station.id:1}")
-    private long stationId;
+    @Value("${station.id:station-1}")
+    private String stationId;
 
     @Scheduled(fixedRate = 1000)
     public void runTask() {
@@ -40,12 +39,14 @@ public class StationTaskService {
             }
 
             StationMessage message = stationMessageService.generateStationMessage(stationId, sNo);
-            kafkaTemplate.send("station-events", String.valueOf(stationId), message);
+            kafkaTemplate.send("station-events", stationId , message);
 
             log.info("Generated and sent message for stationId: {}, sNO: {}", stationId, sNo);
         } catch (Exception e) {
             log.error("Error in scheduled task", e);
         }
     }
+
+
 
     }

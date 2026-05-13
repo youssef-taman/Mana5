@@ -38,9 +38,6 @@
     "s3.ssea.name":        "",
 
     "store.url":                "http://localstack:4566",
-    "s3.path.style.access":     "true",
-
-    "aws.access.key.id":     "test",
-    "aws.secret.access.key": "test"
+    "s3.path.style.access":     "true"
   }
 }

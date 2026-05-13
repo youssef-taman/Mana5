@@ -15,15 +15,16 @@ public class CentralStationService {
 
     private final BitCask bitCask;
 
-@KafkaListener(topics = "station-events", groupId = "central-station-group")
-public void processStationEvent(StationMessage stationMessage) {
-    log.info("Received station event: {}", stationMessage);
-    try {
-        bitCask.put(String.valueOf(stationMessage.getStationId()), stationMessage.toString());
-        log.info("stored {}" , bitCask.get(String.valueOf(stationMessage.getStationId())));
-    } catch (Exception e) {
-        log.error("Error processing station event: {}", e.getMessage(), e);
+    @KafkaListener(topics = "station-events", groupId = "central-station-group")
+    public void processStationEvent(StationMessage stationMessage) {
+        log.info("Received station event: {}", stationMessage);
+        try {
+            String stationId = stationMessage.getStationId();
+            bitCask.put(stationId, stationMessage.toString());
+            log.info("stored {}", bitCask.get(stationId));
+        } catch (Exception e) {
+            log.error("Error processing station event: {}", e.getMessage(), e);
+        }
     }
-}
 }
 
